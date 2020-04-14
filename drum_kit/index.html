@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>JS Drum Kit</title>
+  <link rel="stylesheet" href="assets/css.css">
+
+</head>
+<body>
+  <div class="container">
+
+    <div class="keys">
+      <div data-key='65' class="key">
+        <kbd>A</kbd>
+        <p>Bass Drum</p>
+      </div>
+
+      <div data-key='90' class="key">
+        <kbd>Z</kbd>
+        <p>Claves</p>
+      </div>
+
+      <div data-key='69' class="key">
+        <kbd>E</kbd>
+        <p>Hi-Hat</p>
+      </div>
+
+      <div data-key='82' class="key">
+        <kbd>R</kbd>
+        <p>Cymbal</p>
+      </div>
+
+      <div data-key='84' class="key">
+        <kbd>T</kbd>
+        <p>Crotales</p>
+      </div>
+
+      <div data-key='89' class="key">
+        <kbd>Y</kbd>
+        <p>Ride</p>
+      </div>
+  </div>
+
+    <audio data-key='65' src = 'sounds/bass_drum.wav'></audio>
+    <audio data-key='90' src = 'sounds/claves.wav'></audio>
+    <audio data-key='69' src = 'sounds/hi_hat.wav'></audio>
+    <audio data-key='82' src = 'sounds/cymbal.wav'></audio>
+    <audio data-key='84' src = 'sounds/crotales.wav'></audio>
+    <audio data-key='89' src = 'sounds/ride.wav'></audio>
+
+  <script>
+
+
+    function playSound(e){
+      const audioElt = document.querySelector(`audio[data-key="${e.keyCode}"]`);
+      const keyElt = document.querySelector(`.key[data-key="${e.keyCode}"`)
+      if (!audioElt) {return;}
+      console.log(e.keyCode);
+      console.log(audioElt);
+      audioElt.currentTime = 0;
+      audioElt.play();
+      keyElt.classList.add('playing');
+    };
+
+    function removeTransition(e) {
+      if (e.propertyName != 'transform') return;
+      console.log("e:");
+      console.log(this);
+      this.classList.remove('playing');
+    }
+
+    const keysElt = document.querySelectorAll('.key');
+    keysElt.forEach(key => key.addEventListener('transitionend',removeTransition));
+    window.addEventListener('keydown', playSound);
+  </script>
+
+
+</body>
+</html>
