@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>JS type ahead</title>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <form id="form" class="search-form">
+    <input type="text" class="search" placeholder="City or State">
+    <ul id="content" class="suggestions">
+      <li>Filter For A City</li>
+      <li>Or A State</li>
+    </ul>
+  </form>
+
+  <script>
+    const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+    let cities = [];
+    fetch(endpoint)
+      .then(blob => blob.json())
+      .then(data => cities.push(...data))
+
+    function findMatches(wordToMatch, cities) {
+      return cities.filter(city => {
+        regex = new RegExp(wordToMatch, 'gi');
+        return city.city.match(regex) || city.state.match(regex);
+      });
+    }
+
+    function displayMatches() {
+      const contentElt = document.getElementById('content');
+      const listOfItems = findMatches(this.value, cities);
+      contentElt.textContent = '';
+      const html = listOfItems.map(item => {
+        const regex = new RegExp(this.value, 'gi');
+        const cityName = item.city.replace(regex, `<span class='hl'>${this.value}</span>`);
+        const cityState = item.state.replace(regex, `<span class='hl'>${this.value}</span>`);
+        return `
+          <li>
+            <span class="name">
+              ${cityName}, ${cityState}
+            </span>
+            <span class="population">
+              ${item.population}
+            </span>
+          </li>
+        `;
+        // console.log(html);
+      }).join('');
+        contentElt.insertAdjacentHTML('beforeend', html);
+    }
+
+    const inputElt = document.querySelector('#form input');
+    inputElt.addEventListener('input', displayMatches);
+
+</script>
+</body>
+</html>
